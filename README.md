@@ -1,0 +1,2 @@
+# ChessType
+Chess Personality analysis
