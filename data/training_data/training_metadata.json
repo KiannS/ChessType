@@ -1,0 +1,15 @@
+{
+  "Positional": [
+    "data/training_data/DrNykterstein_lichess.pgn"
+  ],
+  "Aggressive": [
+    "data/training_data/GMHIKARU_lichess.pgn"
+  ],
+  "Tactical": [
+    "data/training_data/GingerGM_lichess.pgn"
+  ],
+  "Solid": [],
+  "Balanced": [
+    "data/training_data/Giri_lichess.pgn"
+  ]
+}
