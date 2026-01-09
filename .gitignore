@@ -24,10 +24,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# ML Models
-*.pkl
-*.h5
-*.pb
+# ML Models (commented out to allow committing trained models)
+# *.pkl
+# *.h5
+# *.pb
 
 # Data
 data/training_data/*.pgn
