@@ -134,7 +134,6 @@ class PositionClusterTrainer:
             n_init=20,
             max_iter=500,
             random_state=42,
-            n_jobs=-1
         )
         
         logger.info("Training K-Means...")
