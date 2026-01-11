@@ -45,10 +45,10 @@ curl -X POST http://localhost:5000/analyze-lichess \
 
 ## Project Status
 - [x] Project setup
-- [ ] Data collection
-- [ ] Feature engineering
-- [ ] Model training
-- [ ] API development
+- [x] Data collection
+- [x] Feature engineering
+- [x] Model training
+- [x] API development
 - [ ] Deployment
 
 ## Tech Stack
