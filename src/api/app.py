@@ -1,4 +1,7 @@
-from flask import Flask, request, jsonify
+"""
+Flask API for Chess Personality Analyzer.
+"""
+from flask import Flask, request, jsonify, send_from_directory
 from pathlib import Path
 import logging
 import sys
@@ -12,7 +15,10 @@ from src.api.analysis import ChessAnalyzer
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+# Initialize Flask with static folder
+app = Flask(__name__, 
+            static_folder='../../static',
+            static_url_path='/static')
 
 # Initialize analyzer
 try:
@@ -21,6 +27,12 @@ try:
 except Exception as e:
     logger.error(f"Failed to initialize analyzer: {e}")
     analyzer = None
+
+
+@app.route('/')
+def index():
+    """Serve the main HTML page."""
+    return send_from_directory('../../static', 'index.html')
 
 
 @app.route('/health', methods=['GET'])
@@ -175,4 +187,5 @@ def internal_error(error):
 
 
 if __name__ == '__main__':
+    # Use port 8000 to avoid conflict with macOS AirPlay on port 5000
     app.run(host='0.0.0.0', port=8000, debug=True)
