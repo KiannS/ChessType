@@ -1,6 +1,5 @@
 """
 Fetch the chess games from Lichess and Chess.com APIs.
-
 """
 
 import requests
@@ -100,19 +99,29 @@ class GameFetcher:
         Returns:
             Path to saved PGN file
         """
-        url = f"{self.CHESSCOM_API}/player/{username}/games/{year}/{month:02d}"
+        # IMPORTANT: Chess.com API requires lowercase usernames
+        username_lower = username.lower()
+        
+        url = f"{self.CHESSCOM_API}/player/{username_lower}/games/{year}/{month:02d}"
         
         logger.info(f"Fetching games for {username} from Chess.com ({year}-{month:02d})...")
+        logger.info(f"API URL: {url}")
+        
+        # Chess.com requires a User-Agent header
+        headers = {
+            "User-Agent": "ChessType/1.0 (Python Chess Analysis App; https://github.com/yourusername/chesstype)"
+        }
         
         try:
-            response = requests.get(url, timeout=30)
+            response = requests.get(url, headers=headers, timeout=30)
             response.raise_for_status()
             
             data = response.json()
             games = data.get('games', [])
             
             if not games:
-                logger.warning(f"No games found for {username}")
+                logger.warning(f"No games found for {username} in {year}-{month:02d}")
+                logger.info(f"Try checking available archives at: {self.CHESSCOM_API}/player/{username_lower}/games/archives")
                 return None
             
             # Limit games if specified
@@ -122,7 +131,11 @@ class GameFetcher:
             # Extract PGN from each game
             pgn_content = "\n\n".join([game.get('pgn', '') for game in games])
             
-            # Save PGN file
+            if not pgn_content.strip():
+                logger.warning(f"Games found but no PGN content for {username}")
+                return None
+            
+            # Save PGN file (use original username for filename)
             output_path = self.output_dir / f"{username}_chesscom_{year}_{month:02d}.pgn"
             output_path.write_text(pgn_content, encoding='utf-8')
             
@@ -130,8 +143,17 @@ class GameFetcher:
             
             return str(output_path)
             
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                logger.error(f"No games found for {username} in {year}-{month:02d}. Check if the username and date are correct.")
+            else:
+                logger.error(f"HTTP error fetching games for {username}: {e}")
+            return None
         except requests.exceptions.RequestException as e:
             logger.error(f"Error fetching games for {username}: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error fetching games for {username}: {e}")
             return None
     
     def fetch_training_dataset(self) -> Dict[str, List[str]]:
@@ -182,4 +204,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
