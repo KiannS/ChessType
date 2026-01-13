@@ -1,6 +1,6 @@
 import tempfile
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 import logging
 import sys
 import os
@@ -56,20 +56,44 @@ class ChessAnalyzer:
     def analyze_chesscom_player(
         self,
         username: str,
-        year: int,
-        month: int,
+        year: Optional[int] = None,
+        month: Optional[int] = None,
         max_games: int = 50
     ) -> Dict:
-        """Analyze a Chess.com player."""
-        logger.info(f"Fetching games for {username} from Chess.com...")
+        """
+        Analyze a Chess.com player.
+        
+        Args:
+            username: Chess.com username
+            year: Year (e.g., 2024) - None or 0 for all-time
+            month: Month (1-12) - None or 0 for all-time
+            max_games: Maximum number of games to analyze
+            
+        Returns:
+            Analysis results dictionary
+        """
+        # Check if this is an all-time request
+        is_all_time = (year is None or year == 0 or 
+                       month is None or month == 0 or
+                       str(year).lower() == 'all' or str(month).lower() == 'all')
+        
+        if is_all_time:
+            logger.info(f"Fetching ALL-TIME games for {username} from Chess.com...")
+        else:
+            logger.info(f"Fetching games for {username} from Chess.com ({year}-{month:02d})...")
         
         # Fetch games to temporary file
         with tempfile.TemporaryDirectory() as temp_dir:
             fetcher = GameFetcher(output_dir=temp_dir)
-            pgn_path = fetcher.fetch_chesscom_games(username, year, month, max_games)
+            
+            # FIXED: Use all-time method when year/month not specified
+            if is_all_time:
+                pgn_path = fetcher.fetch_chesscom_all_games(username, max_games)
+            else:
+                pgn_path = fetcher.fetch_chesscom_games(username, year, month, max_games)
             
             if not pgn_path:
-                return {'error': f'Could not fetch games for {username}'}
+                return {'error': f'Could not fetch games for {username}. Please check the username is correct.'}
             
             return self.analyze_pgn_file(pgn_path, username)
     

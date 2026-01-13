@@ -156,6 +156,107 @@ class GameFetcher:
             logger.error(f"Unexpected error fetching games for {username}: {e}")
             return None
     
+    def fetch_chesscom_all_games(
+        self,
+        username: str,
+        max_games: Optional[int] = None
+    ) -> str:
+        """
+        Fetch all available games from Chess.com across all months.
+        
+        Args:
+            username: Chess.com username
+            max_games: Maximum total number of games (None = all)
+            
+        Returns:
+            Path to saved PGN file
+        """
+        username_lower = username.lower()
+        
+        # First, get the list of all available archives
+        archives_url = f"{self.CHESSCOM_API}/player/{username_lower}/games/archives"
+        
+        headers = {
+            "User-Agent": "ChessType/1.0 (Python Chess Analysis App; contact@email.com)"
+        }
+        
+        logger.info(f"Fetching game archives for {username} from Chess.com...")
+        
+        try:
+            response = requests.get(archives_url, headers=headers, timeout=30)
+            response.raise_for_status()
+            
+            data = response.json()
+            archives = data.get('archives', [])
+            
+            if not archives:
+                logger.warning(f"No game archives found for {username}")
+                return None
+            
+            logger.info(f"Found {len(archives)} monthly archives for {username}")
+            
+            all_games = []
+            
+            # Fetch games from each archive (starting with most recent)
+            for archive_url in reversed(archives):
+                if max_games and len(all_games) >= max_games:
+                    break
+                
+                logger.info(f"Fetching from: {archive_url}")
+                
+                try:
+                    archive_response = requests.get(archive_url, headers=headers, timeout=30)
+                    archive_response.raise_for_status()
+                    
+                    archive_data = archive_response.json()
+                    games = archive_data.get('games', [])
+                    
+                    all_games.extend(games)
+                    logger.info(f"Fetched {len(games)} games from archive (total: {len(all_games)})")
+                    
+                    # Rate limiting - be nice to Chess.com API
+                    time.sleep(0.5)
+                    
+                except requests.exceptions.RequestException as e:
+                    logger.warning(f"Error fetching archive {archive_url}: {e}")
+                    continue
+            
+            if not all_games:
+                logger.warning(f"No games found for {username}")
+                return None
+            
+            # Limit total games if specified
+            if max_games:
+                all_games = all_games[:max_games]
+            
+            # Extract PGN from each game
+            pgn_content = "\n\n".join([game.get('pgn', '') for game in all_games])
+            
+            if not pgn_content.strip():
+                logger.warning(f"Games found but no PGN content for {username}")
+                return None
+            
+            # Save PGN file
+            output_path = self.output_dir / f"{username}_chesscom_all_time.pgn"
+            output_path.write_text(pgn_content, encoding='utf-8')
+            
+            logger.info(f"Successfully fetched {len(all_games)} total games for {username}")
+            
+            return str(output_path)
+            
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                logger.error(f"Player {username} not found on Chess.com")
+            else:
+                logger.error(f"HTTP error fetching archives for {username}: {e}")
+            return None
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Error fetching archives for {username}: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Unexpected error fetching archives for {username}: {e}")
+            return None
+    
     def fetch_training_dataset(self) -> Dict[str, List[str]]:
         """
         Fetch games from famous players for training.

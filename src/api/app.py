@@ -20,16 +20,14 @@ app = Flask(__name__,
             static_url_path='/static',
             template_folder=str(TEMPLATE_FOLDER) if TEMPLATE_FOLDER.exists() else None)
 
-# Try to import the analyzer - try different possible locations
+# Try to import the analyzer
 analyzer = None
 try:
-    # Try importing from analysis.py if ChessAnalyzer is there
     from src.api.analysis import ChessAnalyzer
     analyzer = ChessAnalyzer()
     logger.info("Chess Analyzer initialized successfully from src.api.analysis")
 except ImportError:
     try:
-        # Try importing from inference folder
         from src.inference.chess_analyzer import ChessAnalyzer
         analyzer = ChessAnalyzer()
         logger.info("Chess Analyzer initialized successfully from src.inference.chess_analyzer")
@@ -51,7 +49,6 @@ else:
 def home():
     """Serve the main HTML page"""
     try:
-        # Try to serve index.html from static folder
         if (STATIC_FOLDER / 'index.html').exists():
             return send_from_directory(str(STATIC_FOLDER), 'index.html')
         else:
@@ -160,7 +157,6 @@ def analyze_lichess():
         logger.info(f"Analyzing Lichess player: {username}")
         
         if analyzer:
-            # Use the actual analyzer - check which method it has
             if hasattr(analyzer, 'analyze_lichess_player'):
                 result = analyzer.analyze_lichess_player(username, max_games)
             elif hasattr(analyzer, 'analyze_player'):
@@ -190,16 +186,21 @@ def analyze_chesscom():
         if not username:
             return jsonify({"error": "Username is required"}), 400
         
-        logger.info(f"Analyzing Chess.com player: {username}")
+        # IMPORTANT: Don't set default year/month - let them be None for all-time
+        # Convert empty strings, 0, or "all" to None
+        if year in [None, 0, "", "0", "all", "All"]:
+            year = None
+        if month in [None, 0, "", "0", "all", "All"]:
+            month = None
+        
+        # Log what we're doing
+        if year is None or month is None:
+            logger.info(f"Analyzing Chess.com player (ALL-TIME): {username}")
+        else:
+            logger.info(f"Analyzing Chess.com player: {username} ({year}-{month:02d})")
         
         if analyzer:
-            # Use the actual analyzer - check which method it has
             if hasattr(analyzer, 'analyze_chesscom_player'):
-                if not year or not month:
-                    from datetime import datetime
-                    now = datetime.now()
-                    year = year or now.year
-                    month = month or now.month
                 result = analyzer.analyze_chesscom_player(username, year, month, max_games)
             elif hasattr(analyzer, 'analyze_player'):
                 result = analyzer.analyze_player(
@@ -244,6 +245,12 @@ def analyze():
         if not username:
             return jsonify({"error": "Username is required"}), 400
         
+        # Convert year/month to None for all-time
+        if year in [None, 0, "", "0", "all", "All"]:
+            year = None
+        if month in [None, 0, "", "0", "all", "All"]:
+            month = None
+        
         logger.info(f"Analyzing {platform} player: {username}")
         
         # Route to appropriate endpoint based on platform
@@ -256,11 +263,6 @@ def analyze():
                 result = get_mock_analysis(username, 'lichess')
         else:
             if analyzer and hasattr(analyzer, 'analyze_chesscom_player'):
-                if not year or not month:
-                    from datetime import datetime
-                    now = datetime.now()
-                    year = year or now.year
-                    month = month or now.month
                 result = analyzer.analyze_chesscom_player(username, year, month, max_games)
             elif analyzer and hasattr(analyzer, 'analyze_player'):
                 result = analyzer.analyze_player(

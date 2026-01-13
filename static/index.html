@@ -3,177 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChessType - Discover Your Playing Style</title>
+    <title>ChessType - Chess Playing Style Analyzer</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>♟️ ChessType</h1>
-            <p class="tagline">Discover your chess personality with AI</p>
+            <p class="subtitle">Discover Your Chess Playing Style</p>
         </header>
 
         <main>
-            <!-- Input Form -->
-            <div class="card" id="input-section">
+            <div class="card">
                 <h2>Analyze Your Games</h2>
-                
-                <form id="analysis-form">
+                <form id="analyzeForm">
                     <div class="form-group">
-                        <label>Platform</label>
-                        <div class="radio-group">
-                            <label class="radio-label">
-                                <input type="radio" name="platform" value="lichess" checked>
-                                <span>Lichess</span>
-                            </label>
-                            <label class="radio-label">
-                                <input type="radio" name="platform" value="chesscom">
-                                <span>Chess.com</span>
-                            </label>
-                        </div>
+                        <label for="platform">Platform</label>
+                        <select id="platform" name="platform" required>
+                            <option value="chesscom">Chess.com</option>
+                            <option value="lichess">Lichess</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            placeholder="Enter your username"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group" id="chesscom-dates" style="display: none;">
-                        <label for="year">Month to Analyze</label>
-                        <div class="date-inputs">
-                            <select id="year" name="year">
-                                <option value="2025">2025</option>
-                                <option value="2024" selected>2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                            <select id="month" name="month">
-                                <option value="1" selected>January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
+                        <input type="text" id="username" name="username" placeholder="Your chess username" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="max-games">Number of Games to Analyze</label>
-                        <input 
-                            type="number" 
-                            id="max-games" 
-                            name="max_games" 
-                            value="50" 
-                            min="10" 
-                            max="100"
-                        >
-                        <small>More games = more accurate analysis (10-100)</small>
+                        <label for="maxGames">Number of Games to Analyze</label>
+                        <input type="number" id="maxGames" name="maxGames" min="10" max="200" value="50" required>
+                        <small>Analyzing more games provides better accuracy (10-200)</small>
                     </div>
 
-                    <button type="submit" class="btn-primary" id="analyze-btn">
-                        Analyze My Games
+                    <button type="submit" id="analyzeBtn">
+                        <span id="btnText">Analyze My Playing Style</span>
+                        <span id="btnLoader" class="loader" style="display: none;"></span>
                     </button>
                 </form>
             </div>
 
-            <!-- Loading State -->
-            <div class="card" id="loading-section" style="display: none;">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Analyzing your games...</p>
-                    <small>This may take 10-30 seconds</small>
-                </div>
-            </div>
-
-            <!-- Results -->
-            <div id="results-section" style="display: none;">
-                <!-- Style Analysis -->
+            <div id="results" style="display: none;">
                 <div class="card">
-                    <h2>Your Playing Style</h2>
-                    <div class="style-result">
-                        <div class="style-main">
-                            <span class="style-badge" id="style-badge"></span>
-                            <span class="confidence" id="confidence"></span>
-                        </div>
-                        <p class="description" id="description"></p>
+                    <h2>📊 Analysis Results for <span id="resultUsername"></span></h2>
+                    <p class="games-analyzed">Analyzed <strong id="gamesCount"></strong> games</p>
+
+                    <div class="section">
+                        <h3>🎯 Your Playing Style</h3>
+                        <div class="style-badge" id="styleBadge"></div>
+                        <div class="confidence">Confidence: <strong id="confidence"></strong></div>
+                        <p id="styleDescription"></p>
                         
-                        <div class="strengths-weaknesses">
-                            <div>
-                                <h3>💪 Your Strengths</h3>
-                                <ul id="strengths-list"></ul>
+                        <div class="subsection">
+                            <h4>Your Strengths</h4>
+                            <ul id="strengths"></ul>
+                        </div>
+
+                        <div class="subsection">
+                            <h4>Famous Players with Similar Style</h4>
+                            <ul id="famousPlayers"></ul>
+                        </div>
+
+                        <div class="subsection">
+                            <h4>Style Distribution</h4>
+                            <div id="styleProbs"></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🎲 Position Analysis</h3>
+                        
+                        <div class="position-stats">
+                            <div class="stat-card">
+                                <div class="stat-label">Best Position Type</div>
+                                <div class="stat-value" id="bestPosition"></div>
+                                <div class="stat-detail" id="bestPositionWinRate"></div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-label">Worst Position Type</div>
+                                <div class="stat-value" id="worstPosition"></div>
+                                <div class="stat-detail" id="worstPositionWinRate"></div>
                             </div>
                         </div>
 
-                        <div class="similar-players">
-                            <h3>👤 You Play Like</h3>
-                            <p id="famous-players"></p>
+                        <div class="subsection">
+                            <h4>Performance by Position Type</h4>
+                            <div id="positionPerformance"></div>
+                        </div>
+
+                        <div class="subsection">
+                            <h4>Position Distribution</h4>
+                            <div id="positionDistribution"></div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Position Analysis -->
-                <div class="card">
-                    <h2>Position Type Performance</h2>
-                    <div id="position-performance"></div>
-                </div>
+                    <div class="section">
+                        <h3>💡 Recommendations</h3>
+                        <div id="recommendations"></div>
+                    </div>
 
-                <!-- Recommendations -->
-                <div class="card">
-                    <h2>Personalized Recommendations</h2>
-                    
-                    <div class="recommendations">
-                        <div class="recommendation-section">
-                            <h3>📚 Recommended Openings</h3>
-                            <ul id="openings-list"></ul>
-                        </div>
-
-                        <div class="recommendation-section">
-                            <h3>💡 Training Tips</h3>
-                            <ul id="tips-list"></ul>
-                        </div>
-
-                        <div class="recommendation-section">
-                            <h3>🎯 Focus Areas</h3>
-                            <ul id="focus-list"></ul>
-                        </div>
+                    <div class="section">
+                        <h3>📈 Statistics</h3>
+                        <div id="statistics"></div>
                     </div>
                 </div>
-
-                <!-- Statistics -->
-                <div class="card">
-                    <h2>Game Statistics</h2>
-                    <div class="stats-grid" id="stats-grid"></div>
-                </div>
-
-                <!-- Analyze Again Button -->
-                <button class="btn-secondary" onclick="resetForm()">
-                    Analyze Another Player
-                </button>
             </div>
 
-            <!-- Error State -->
-            <div class="card error-card" id="error-section" style="display: none;">
-                <h2>❌ Error</h2>
-                <p id="error-message"></p>
-                <button class="btn-secondary" onclick="resetForm()">Try Again</button>
+            <div id="error" class="error" style="display: none;">
+                <h3>❌ Error</h3>
+                <p id="errorMessage"></p>
             </div>
         </main>
 
         <footer>
-            <p>Powered by Machine Learning • Built with Flask & scikit-learn</p>
-            <p><small>ChessType analyzes your publicly available games to determine your playing style</small></p>
+            <p>Powered by Machine Learning | Chess.com & Lichess Integration</p>
         </footer>
     </div>
 
