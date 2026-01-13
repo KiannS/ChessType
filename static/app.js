@@ -3,7 +3,6 @@ document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
     
     const platform = document.getElementById('platform').value;
     const username = document.getElementById('username').value;
-    const maxGames = parseInt(document.getElementById('maxGames').value);
     
     // Hide previous results/errors
     document.getElementById('results').style.display = 'none';
@@ -25,14 +24,13 @@ document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
             endpoint = '/analyze-lichess';
             requestData = {
                 username: username,
-                max_games: maxGames
+                max_games: 1000  // Set high limit for all games
             };
         } else {
             endpoint = '/analyze-chesscom';
-            // All-time analysis - don't send year/month
             requestData = {
                 username: username,
-                max_games: maxGames
+                max_games: 1000  // Set high limit for all games
             };
         }
         

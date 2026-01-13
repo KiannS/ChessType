@@ -16,6 +16,7 @@
         <main>
             <div class="card">
                 <h2>Analyze Your Games</h2>
+                <p style="color: #666; margin-bottom: 20px;">We'll analyze all available games from your account to determine your playing style.</p>
                 <form id="analyzeForm">
                     <div class="form-group">
                         <label for="platform">Platform</label>
@@ -28,12 +29,6 @@
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" placeholder="Your chess username" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="maxGames">Number of Games to Analyze</label>
-                        <input type="number" id="maxGames" name="maxGames" min="10" max="200" value="50" required>
-                        <small>Analyzing more games provides better accuracy (10-200)</small>
                     </div>
 
                     <button type="submit" id="analyzeBtn">
@@ -110,7 +105,7 @@
             </div>
 
             <div id="error" class="error" style="display: none;">
-                <h3>❌ Error</h3>
+                <h3>⚠ Error</h3>
                 <p id="errorMessage"></p>
             </div>
         </main>
