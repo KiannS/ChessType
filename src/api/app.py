@@ -90,6 +90,7 @@ def health():
     })
 
 
+
 def get_mock_analysis(username, platform):
     """Return mock analysis data when analyzer is not available"""
     return {
@@ -292,6 +293,27 @@ def not_found(e):
 def internal_error(e):
     """Handle 500 errors"""
     return jsonify({"error": "Internal server error"}), 500
+
+@app.route('/faq')
+def faq():
+    """Serve the FAQ page"""
+    if (STATIC_FOLDER / 'faq.html').exists():
+        return send_from_directory(str(STATIC_FOLDER), 'faq.html')
+    return "FAQ page coming soon", 404
+
+@app.route('/contact')
+def contact():
+    """Serve the contact page"""
+    if (STATIC_FOLDER / 'contact.html').exists():
+        return send_from_directory(str(STATIC_FOLDER), 'contact.html')
+    return "Contact page coming soon", 404
+
+@app.route('/players')
+def players():
+    """Serve the players page"""
+    if (STATIC_FOLDER / 'players.html').exists():
+        return send_from_directory(str(STATIC_FOLDER), 'players.html')
+    return "Players page coming soon", 404
 
 
 if __name__ == '__main__':

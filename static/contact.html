@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - ChessType</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♔</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ChessType</h1>
+            <p class="subtitle">Discover Your Chess Playing Style with AI</p>
+            
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/players">Players</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="/contact" class="active">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>📧 Contact Us</h2>
+                <p style="color: var(--chess-text-secondary); margin-bottom: 24px;">
+                    Have questions, feedback, or suggestions? We'd love to hear from you!
+                </p>
+
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a topic...</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="question">Question</option>
+                            <option value="feedback">General Feedback</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Tell us more..." required></textarea>
+                    </div>
+
+                    <button type="submit" id="contactBtn">
+                        <span id="contactBtnText">Send Message</span>
+                        <span id="contactBtnLoader" class="loader" style="display: none;"></span>
+                    </button>
+                </form>
+
+                <div id="contactSuccess" style="display: none; margin-top: 20px; padding: 20px; background: rgba(129, 182, 76, 0.2); border-left: 4px solid var(--chess-green); border-radius: 6px;">
+                    <p style="color: var(--chess-green); font-weight: 600;">✓ Message sent successfully!</p>
+                    <p style="color: var(--chess-text); margin-top: 8px;">Thank you for reaching out. We'll get back to you soon.</p>
+                </div>
+
+                <div id="contactError" style="display: none; margin-top: 20px; padding: 20px; background: rgba(179, 52, 48, 0.2); border-left: 4px solid var(--blunder); border-radius: 6px;">
+                    <p style="color: var(--blunder); font-weight: 600;">✗ Failed to send message</p>
+                    <p id="contactErrorMessage" style="color: var(--chess-text); margin-top: 8px;"></p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🔗 Connect With Us</h3>
+                <p style="color: var(--chess-text); line-height: 1.8;">
+                    <strong>Email:</strong> <a href="mailto:kiannskkandann@gmail.com" style="color: var(--chess-green);">kiannskkandann@gmail.com</a>
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>💡 How We Can Help</h3>
+                <ul>
+                    <li><strong>Bug Reports:</strong> Found something not working? Let us know with details about what happened.</li>
+                    <li><strong>Feature Requests:</strong> Have an idea for a new feature? We're always looking to improve!</li>
+                    <li><strong>General Questions:</strong> Check our <a href="/faq" style="color: var(--chess-green);">FAQ page</a> first, then reach out if you need more help.</li>
+                    <li><strong>Feedback:</strong> Love ChessType? Tell us! Have suggestions? We want to hear them!</li>
+                </ul>
+            </div>
+        </main>
+
+        <footer>
+            <p><strong>ChessType</strong> - AI-Powered Chess Analysis</p>
+            <p>Powered by Machine Learning • Chess.com & Lichess Integration</p>
+            <p style="margin-top: 16px;">
+                <a href="/faq">FAQ</a> • 
+                <a href="/contact">Contact</a> • 
+                <a href="/players">Players</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('contactBtn');
+            const btnText = document.getElementById('contactBtnText');
+            const btnLoader = document.getElementById('contactBtnLoader');
+            const successDiv = document.getElementById('contactSuccess');
+            const errorDiv = document.getElementById('contactError');
+            
+            // Hide previous messages
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            // Show loading
+            btnText.style.display = 'none';
+            btnLoader.style.display = 'inline-block';
+            btn.disabled = true;
+            
+            // Simulate sending (replace with actual API call)
+            try {
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Show success
+                successDiv.style.display = 'block';
+                document.getElementById('contactForm').reset();
+                
+                // Scroll to success message
+                successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                // Show error
+                document.getElementById('contactErrorMessage').textContent = 
+                    'An error occurred. Please try again or email us directly.';
+                errorDiv.style.display = 'block';
+            } finally {
+                // Reset button
+                btnText.style.display = 'inline';
+                btnLoader.style.display = 'none';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

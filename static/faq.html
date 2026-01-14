@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - ChessType</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♔</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ChessType</h1>
+            <p class="subtitle">Discover Your Chess Playing Style with AI</p>
+            
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/players">Players</a></li>
+                    <li><a href="/faq" class="active">FAQ</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>❓ Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">What is ChessType?</div>
+                    <div class="faq-answer">
+                        ChessType is an AI-powered chess analysis tool that uses machine learning to identify your unique playing style. By analyzing your games from Chess.com or Lichess, we can classify you into one of five playing styles (Positional, Aggressive, Tactical, Solid, or Balanced) and provide personalized recommendations for improvement.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">How does it work?</div>
+                    <div class="faq-answer">
+                        ChessType uses trained machine learning models (Random Forest classifiers and K-Means clustering) to analyze your games. We extract features like piece activity, pawn structure, center control, tactical patterns, and position types. These features are then compared against patterns from professional players to determine your style and strengths.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">How many games do I need?</div>
+                    <div class="faq-answer">
+                        For the best results, we recommend having at least 20-50 rated games. The more games you have, the more accurate the analysis will be. We analyze up to 1000 of your most recent games to get a comprehensive picture of your playing style.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">What are the different playing styles?</div>
+                    <div class="faq-answer">
+                        <strong>Positional:</strong> Emphasizes long-term planning and strategic maneuvering (like Magnus Carlsen)<br>
+                        <strong>Aggressive:</strong> Focuses on initiative, attacking, and creating threats (like Hikaru Nakamura)<br>
+                        <strong>Tactical:</strong> Excels at combinations and sharp calculations (like Mikhail Tal)<br>
+                        <strong>Solid:</strong> Plays reliably with minimal mistakes and strong defense (like Fabiano Caruana)<br>
+                        <strong>Balanced:</strong> Adapts to positions with well-rounded skills (like Levon Aronian)
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Is my data safe?</div>
+                    <div class="faq-answer">
+                        Yes! We only access publicly available game data from Chess.com and Lichess using their official APIs. We don't store your games or personal information. All analysis is performed in real-time and not saved on our servers.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Which platforms are supported?</div>
+                    <div class="faq-answer">
+                        Currently, we support Chess.com and Lichess. Both platforms provide free APIs that allow us to access your public game history. You don't need a premium account on either platform.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">How accurate is the analysis?</div>
+                    <div class="faq-answer">
+                        Our models have been trained on thousands of games from professional players and achieve approximately 75-80% accuracy in style classification. Position type classification achieves around 70-75% accuracy. Remember that playing styles can be fluid and may change over time or based on time controls.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Can I analyze bullet or blitz games?</div>
+                    <div class="faq-answer">
+                        Yes! We analyze all time controls including bullet, blitz, rapid, and classical games. However, keep in mind that your style might differ between time controls. For the most comprehensive analysis, we recommend having games in multiple time controls.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Why is my analysis taking so long?</div>
+                    <div class="faq-answer">
+                        Analysis time depends on how many games you have and the current server load. Typically, analyzing 50-100 games takes 30-90 seconds. For larger game collections (500+ games), it may take 2-3 minutes. We're downloading games from the platform APIs, extracting features, and running ML models - all in real-time!
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">What do the position types mean?</div>
+                    <div class="faq-answer">
+                        <strong>Quiet:</strong> Stable positions with low tactical complexity<br>
+                        <strong>Chaotic:</strong> Unclear positions with many hanging pieces<br>
+                        <strong>Tactical:</strong> Positions with forcing moves, pins, and tactics<br>
+                        <strong>Sharp:</strong> Imbalanced positions with opposite-side castling<br>
+                        <strong>Endgame:</strong> Late-game positions with few pieces<br>
+                        <strong>Balanced:</strong> Equal material, symmetrical positions
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Can I get analyzed multiple times?</div>
+                    <div class="faq-answer">
+                        Absolutely! Your playing style can evolve as you improve. We recommend re-analyzing every few months to track your progress and see how your style develops over time.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">Is ChessType free?</div>
+                    <div class="faq-answer">
+                        Yes! ChessType is completely free to use. We're passionate about helping chess players improve through data-driven insights.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">I found a bug or have a suggestion. How can I report it?</div>
+                    <div class="faq-answer">
+                        We'd love to hear from you! Please visit our <a href="/contact" style="color: var(--chess-green);">Contact page</a> to send us your feedback, bug reports, or feature suggestions.
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p><strong>ChessType</strong> - AI-Powered Chess Analysis</p>
+            <p>Powered by Machine Learning • Chess.com & Lichess Integration</p>
+            <p style="margin-top: 16px;">
+                <a href="/faq">FAQ</a> • 
+                <a href="/contact">Contact</a> • 
+                <a href="/players">Players</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

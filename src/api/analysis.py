@@ -288,15 +288,32 @@ class ChessAnalyzer:
         openings = {}
         
         for game in games:
-            opening = game.headers.get('Opening', 'Unknown')
-            openings[opening] = openings.get(opening, 0) + 1
+            # FIXED: Try multiple headers for opening information
+            opening = (
+                game.headers.get('Opening') or 
+                game.headers.get('ECO') or
+                game.headers.get('Event', '')
+            )
+            
+            # Clean up opening name
+            if opening and opening.strip() and opening != '?':
+                # Remove ECO codes (like "B12") from the beginning
+                import re
+                opening_clean = re.sub(r'^[A-E]\d{2}\s*', '', opening).strip()
+                
+                # If we still have something meaningful, use it
+                if opening_clean and len(opening_clean) > 2:
+                    openings[opening_clean] = openings.get(opening_clean, 0) + 1
             
             moves = self.parser.get_moves_list(game)
             total_moves += len(moves)
         
         # Top 5 openings
-        top_openings = sorted(openings.items(), key=lambda x: x[1], reverse=True)[:5]
-        favorite_openings = [opening for opening, _ in top_openings]
+        if openings:
+            top_openings = sorted(openings.items(), key=lambda x: x[1], reverse=True)[:5]
+            favorite_openings = [opening for opening, _ in top_openings]
+        else:
+            favorite_openings = []
         
         # Average features
         avg_stats = {
