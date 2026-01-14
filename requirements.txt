@@ -10,3 +10,4 @@ keras==2.13.1
 pytest==7.4.0
 jupyter==1.0.0
 gunicorn==21.2.0
+zstandard tqdm==4.65.0
