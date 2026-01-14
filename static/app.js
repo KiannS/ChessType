@@ -24,13 +24,13 @@ document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
             endpoint = '/analyze-lichess';
             requestData = {
                 username: username,
-                max_games: 1000  // Set high limit for all games
+                max_games: 1000
             };
         } else {
             endpoint = '/analyze-chesscom';
             requestData = {
                 username: username,
-                max_games: 1000  // Set high limit for all games
+                max_games: 1000
             };
         }
         
@@ -98,11 +98,10 @@ function displayResults(data) {
         famousPlayersList.appendChild(li);
     });
     
-    // Style Probabilities - FIXED: Now creates proper HTML structure
+    // Style Probabilities
     const styleProbs = document.getElementById('styleProbs');
     styleProbs.innerHTML = '';
     
-    // Sort by probability descending
     const sortedProbs = Object.entries(data.style_analysis.style_probabilities)
         .sort((a, b) => b[1] - a[1]);
     
@@ -147,11 +146,10 @@ function displayResults(data) {
             (data.position_analysis.worst_position_type.win_rate * 100).toFixed(1) + '% win rate';
     }
     
-    // Performance by Position Type - FIXED: Now creates proper card structure
+    // Performance by Position Type
     const positionPerf = document.getElementById('positionPerformance');
     positionPerf.innerHTML = '';
     
-    // Sort by win rate descending
     const sortedPerf = Object.entries(data.position_analysis.performance_by_type)
         .sort((a, b) => b[1].win_rate - a[1].win_rate);
     
@@ -177,11 +175,10 @@ function displayResults(data) {
         positionPerf.appendChild(card);
     });
     
-    // Position Distribution - FIXED: Now creates proper bars
+    // Position Distribution
     const positionDist = document.getElementById('positionDistribution');
     positionDist.innerHTML = '';
     
-    // Sort by percentage descending
     const sortedDist = Object.entries(data.position_analysis.position_distribution)
         .sort((a, b) => b[1] - a[1]);
     
@@ -257,6 +254,12 @@ function displayResults(data) {
         recommendations.appendChild(openingsSection);
     }
     
+    // Pawn Structures
+    displayPawnStructures(data.recommendations.pawn_structures);
+    
+    // Endgame Analysis
+    displayEndgameAnalysis(data.recommendations.endgames, data.recommendations.endgame_performance);
+    
     // Statistics
     const statistics = document.getElementById('statistics');
     statistics.innerHTML = `
@@ -297,4 +300,147 @@ function displayResults(data) {
     // Show results
     document.getElementById('results').style.display = 'block';
     window.scrollTo({ top: document.getElementById('results').offsetTop - 20, behavior: 'smooth' });
+}
+
+function displayPawnStructures(structures) {
+    const container = document.getElementById('pawnStructures');
+    container.innerHTML = '';
+    
+    if (!structures || (!structures.study && !structures.avoid)) {
+        container.innerHTML = '<p style="color: var(--chess-text-secondary);">No pawn structure data available</p>';
+        return;
+    }
+    
+    // Study These Structures
+    if (structures.study && structures.study.length > 0) {
+        const studyDiv = document.createElement('div');
+        studyDiv.style.marginBottom = '20px';
+        
+        const studyTitle = document.createElement('h5');
+        studyTitle.style.color = 'var(--chess-green)';
+        studyTitle.style.marginBottom = '12px';
+        studyTitle.textContent = '✓ Study These Structures';
+        studyDiv.appendChild(studyTitle);
+        
+        const studyList = document.createElement('ul');
+        structures.study.forEach(structure => {
+            const li = document.createElement('li');
+            li.textContent = structure;
+            studyList.appendChild(li);
+        });
+        studyDiv.appendChild(studyList);
+        container.appendChild(studyDiv);
+    }
+    
+    // Avoid These Structures
+    if (structures.avoid && structures.avoid.length > 0) {
+        const avoidDiv = document.createElement('div');
+        
+        const avoidTitle = document.createElement('h5');
+        avoidTitle.style.color = 'var(--mistake)';
+        avoidTitle.style.marginBottom = '12px';
+        avoidTitle.textContent = '⚠ Structures to Avoid';
+        avoidDiv.appendChild(avoidTitle);
+        
+        const avoidList = document.createElement('ul');
+        structures.avoid.forEach(structure => {
+            const li = document.createElement('li');
+            li.textContent = structure;
+            li.style.color = 'var(--chess-text-secondary)';
+            avoidList.appendChild(li);
+        });
+        avoidDiv.appendChild(avoidList);
+        container.appendChild(avoidDiv);
+    }
+}
+
+function displayEndgameAnalysis(endgames, performance) {
+    const container = document.getElementById('endgameAnalysis');
+    container.innerHTML = '';
+    
+    // Performance Summary
+    if (performance && performance.assessment) {
+        const perfCard = document.createElement('div');
+        perfCard.className = 'position-card ' + (performance.rating || 'average').toLowerCase();
+        perfCard.style.marginBottom = '20px';
+        
+        const perfTitle = document.createElement('div');
+        perfTitle.className = 'position-type';
+        perfTitle.textContent = 'Your Endgame Performance';
+        
+        const perfRating = document.createElement('div');
+        perfRating.className = 'position-rating';
+        perfRating.textContent = performance.rating || 'Unknown';
+        
+        const perfStats = document.createElement('div');
+        perfStats.className = 'position-stats';
+        if (performance.win_rate !== undefined) {
+            perfStats.innerHTML = `Win Rate: ${(performance.win_rate * 100).toFixed(1)}%<br>`;
+        }
+        perfStats.innerHTML += `${performance.assessment}`;
+        
+        perfCard.appendChild(perfTitle);
+        perfCard.appendChild(perfRating);
+        perfCard.appendChild(perfStats);
+        container.appendChild(perfCard);
+        
+        if (performance.focus) {
+            const focusP = document.createElement('p');
+            focusP.style.color = 'var(--chess-text)';
+            focusP.style.marginBottom = '24px';
+            focusP.style.fontWeight = '600';
+            focusP.innerHTML = `💡 ${performance.focus}`;
+            container.appendChild(focusP);
+        }
+    }
+    
+    if (!endgames || (!endgames.strong && !endgames.improve)) {
+        const noData = document.createElement('p');
+        noData.style.color = 'var(--chess-text-secondary)';
+        noData.textContent = 'No endgame recommendations available';
+        container.appendChild(noData);
+        return;
+    }
+    
+    // Strong Endgames
+    if (endgames.strong && endgames.strong.length > 0) {
+        const strongDiv = document.createElement('div');
+        strongDiv.style.marginBottom = '20px';
+        
+        const strongTitle = document.createElement('h5');
+        strongTitle.style.color = 'var(--chess-green)';
+        strongTitle.style.marginBottom = '12px';
+        strongTitle.textContent = '💪 Your Strong Endgames';
+        strongDiv.appendChild(strongTitle);
+        
+        const strongList = document.createElement('ul');
+        endgames.strong.forEach(endgame => {
+            const li = document.createElement('li');
+            li.textContent = endgame;
+            strongList.appendChild(li);
+        });
+        strongDiv.appendChild(strongList);
+        container.appendChild(strongDiv);
+    }
+    
+    // Endgames to Improve
+    if (endgames.improve && endgames.improve.length > 0) {
+        const improveDiv = document.createElement('div');
+        
+        const improveTitle = document.createElement('h5');
+        improveTitle.style.color = 'var(--inaccuracy)';
+        improveTitle.style.marginBottom = '12px';
+        improveTitle.textContent = '📚 Endgames to Study';
+        improveDiv.appendChild(improveTitle);
+        
+        const improveList = document.createElement('ul');
+        endgames.improve.forEach(endgame => {
+            const li = document.createElement('li');
+            li.textContent = endgame;
+            li.style.color = 'var(--chess-text-secondary)';
+            improveList.appendChild(li);
+        });
+        improveDiv.appendChild(improveList);
+        container.appendChild(improveDiv);
+    }
 }

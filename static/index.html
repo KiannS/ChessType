@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChessType - Chess Playing Style Analyzer</title>
+    <title>ChessType - Analyze Your Playing Style</title>
     <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♔</text></svg>">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>♟️ ChessType</h1>
-            <p class="subtitle">Discover Your Chess Playing Style</p>
+            <h1>ChessType</h1>
+            <p class="subtitle">Discover Your Chess Playing Style with AI</p>
+            
+            <nav>
+                <ul>
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/players">Players</a></li>
+                    <li><a href="/faq">FAQ</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </nav>
         </header>
 
         <main>
             <div class="card">
-                <h2>Analyze Your Games</h2>
-                <p style="color: #666; margin-bottom: 20px;">We'll analyze all available games from your account to determine your playing style.</p>
+                <h2>⚡ Analyze Your Games</h2>
+                <p style="color: var(--chess-text-secondary); margin-bottom: 24px;">
+                    Connect your Chess.com or Lichess account to analyze your playing style using machine learning.
+                </p>
                 <form id="analyzeForm">
                     <div class="form-group">
                         <label for="platform">Platform</label>
@@ -28,11 +40,11 @@
 
                     <div class="form-group">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" placeholder="Your chess username" required>
+                        <input type="text" id="username" name="username" placeholder="Enter your username" required>
                     </div>
 
                     <button type="submit" id="analyzeBtn">
-                        <span id="btnText">Analyze My Playing Style</span>
+                        <span id="btnText">Analyze</span>
                         <span id="btnLoader" class="loader" style="display: none;"></span>
                     </button>
                 </form>
@@ -40,33 +52,33 @@
 
             <div id="results" style="display: none;">
                 <div class="card">
-                    <h2>📊 Analysis Results for <span id="resultUsername"></span></h2>
-                    <p class="games-analyzed">Analyzed <strong id="gamesCount"></strong> games</p>
+                    <h2>📊 Analysis Results for <span id="resultUsername" style="color: var(--chess-green);"></span></h2>
+                    <p class="games-analyzed">Analyzed <strong id="gamesCount" style="color: var(--chess-green);"></strong> games</p>
 
                     <div class="section">
                         <h3>🎯 Your Playing Style</h3>
                         <div class="style-badge" id="styleBadge"></div>
-                        <div class="confidence">Confidence: <strong id="confidence"></strong></div>
-                        <p id="styleDescription"></p>
+                        <div class="confidence">Confidence: <strong id="confidence" style="color: var(--chess-green);"></strong></div>
+                        <p id="styleDescription" style="line-height: 1.8; color: var(--chess-text);"></p>
                         
                         <div class="subsection">
-                            <h4>Your Strengths</h4>
+                            <h4>💪 Your Strengths</h4>
                             <ul id="strengths"></ul>
                         </div>
 
                         <div class="subsection">
-                            <h4>Famous Players with Similar Style</h4>
+                            <h4>👥 Similar Professional Players</h4>
                             <ul id="famousPlayers"></ul>
                         </div>
 
                         <div class="subsection">
-                            <h4>Style Distribution</h4>
+                            <h4>📈 Style Distribution</h4>
                             <div id="styleProbs"></div>
                         </div>
                     </div>
 
                     <div class="section">
-                        <h3>🎲 Position Analysis</h3>
+                        <h3>♟️ Position Analysis</h3>
                         
                         <div class="position-stats">
                             <div class="stat-card">
@@ -82,23 +94,33 @@
                         </div>
 
                         <div class="subsection">
-                            <h4>Performance by Position Type</h4>
+                            <h4>🎲 Performance by Position Type</h4>
                             <div id="positionPerformance"></div>
                         </div>
 
                         <div class="subsection">
-                            <h4>Position Distribution</h4>
+                            <h4>📊 Position Distribution</h4>
                             <div id="positionDistribution"></div>
                         </div>
                     </div>
 
                     <div class="section">
-                        <h3>💡 Recommendations</h3>
+                        <h3>💡 Personalized Recommendations</h3>
                         <div id="recommendations"></div>
+                        
+                        <div class="subsection">
+                            <h4>🏗️ Recommended Pawn Structures</h4>
+                            <div id="pawnStructures"></div>
+                        </div>
+                        
+                        <div class="subsection">
+                            <h4>♔♟️ Endgame Analysis</h4>
+                            <div id="endgameAnalysis"></div>
+                        </div>
                     </div>
 
                     <div class="section">
-                        <h3>📈 Statistics</h3>
+                        <h3>📈 Game Statistics</h3>
                         <div id="statistics"></div>
                     </div>
                 </div>
@@ -111,7 +133,13 @@
         </main>
 
         <footer>
-            <p>Powered by Machine Learning | Chess.com & Lichess Integration</p>
+            <p><strong>ChessType</strong> - AI-Powered Chess Analysis</p>
+            <p>Powered by Machine Learning • Chess.com & Lichess Integration</p>
+            <p style="margin-top: 16px;">
+                <a href="/faq">FAQ</a> • 
+                <a href="/contact">Contact</a> • 
+                <a href="/players">Players</a>
+            </p>
         </footer>
     </div>
 
