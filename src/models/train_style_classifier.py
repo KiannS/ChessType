@@ -43,6 +43,7 @@ class StyleClassifierTrainer:
         'LyonBeast': 'Positional',
         'penguingim1': 'Positional',
         'Hikaru': 'Aggressive',
+        'Msb2': 'Positional',
         'GMHIKARU': 'Aggressive',
         'GothamChess': 'Tactical',
         'GingerGM': 'Tactical',
@@ -81,7 +82,10 @@ class StyleClassifierTrainer:
         player_names = []
         
         # Iterate through PGN files
-        for pgn_file in self.data_dir.glob("*_lichess.pgn"):
+        import itertools
+        lichess_files = self.data_dir.glob("*_lichess.pgn")
+        chesscom_files = self.data_dir.glob("*_chesscom*.pgn")
+        for pgn_file in itertools.chain(lichess_files, chesscom_files):
             # Extract player name from filename
             player_name = pgn_file.stem.replace("_lichess", "")
             
