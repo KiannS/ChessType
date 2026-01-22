@@ -32,6 +32,7 @@ wheels/
 # Data
 data/training_data/*.pgn
 data/*.json
+data/elite_database/
 
 # IDE
 .vscode/
